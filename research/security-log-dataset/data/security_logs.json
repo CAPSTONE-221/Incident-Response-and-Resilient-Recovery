@@ -1,0 +1,31 @@
+{
+  "dataset_name": "Sample Security Logs",
+  "dataset_type": "Synthetic",
+  "description": "Sample authentication and network security events for testing a threat detection pipeline.",
+  "label_definitions": {
+    "Normal": "An event representing expected or routine system activity in this sample dataset.",
+    "Suspicious": "An event exhibiting potentially malicious or anomalous behaviour that warrants investigation."
+  },
+  "records": [
+    {"event_id":"AUTH001","category":"authentication","timestamp":"2026-11-12T09:00:00Z","source_ip":"192.168.1.10","username":"admin","event_type":"login","status":"success","severity":"low","label":"Normal"},
+    {"event_id":"AUTH002","category":"authentication","timestamp":"2026-11-12T09:05:00Z","source_ip":"192.168.1.15","username":"user01","event_type":"login","status":"success","severity":"low","label":"Normal"},
+    {"event_id":"AUTH003","category":"authentication","timestamp":"2026-11-12T09:10:00Z","source_ip":"192.168.1.20","username":"user02","event_type":"login","status":"failure","severity":"low","label":"Normal"},
+    {"event_id":"AUTH004","category":"authentication","timestamp":"2026-11-12T09:12:00Z","source_ip":"203.0.113.45","username":"admin","event_type":"repeated_login_failure","status":"failure","failed_attempts":8,"severity":"high","label":"Suspicious"},
+    {"event_id":"AUTH005","category":"authentication","timestamp":"2026-11-12T09:13:00Z","source_ip":"203.0.113.45","username":"admin","event_type":"repeated_login_failure","status":"failure","failed_attempts":12,"severity":"critical","label":"Suspicious"},
+    {"event_id":"AUTH006","category":"authentication","timestamp":"2026-11-12T09:20:00Z","source_ip":"192.168.1.25","username":"user03","event_type":"login","status":"success","severity":"low","label":"Normal"},
+    {"event_id":"AUTH007","category":"authentication","timestamp":"2026-11-12T09:30:00Z","source_ip":"198.51.100.22","username":"root","event_type":"repeated_login_failure","status":"failure","failed_attempts":15,"severity":"critical","label":"Suspicious"},
+    {"event_id":"AUTH008","category":"authentication","timestamp":"2026-11-12T10:00:00Z","source_ip":"192.168.1.30","username":"user04","event_type":"password_change","status":"success","severity":"low","label":"Normal"},
+    {"event_id":"AUTH009","category":"authentication","timestamp":"2026-11-12T10:15:00Z","source_ip":"203.0.113.88","username":"admin","event_type":"repeated_login_failure","status":"failure","failed_attempts":10,"severity":"high","label":"Suspicious"},
+    {"event_id":"AUTH010","category":"authentication","timestamp":"2026-11-12T10:30:00Z","source_ip":"192.168.1.10","username":"admin","event_type":"logout","status":"success","severity":"low","label":"Normal"},
+    {"event_id":"NET001","category":"network","timestamp":"2026-11-12T09:00:00Z","source_ip":"192.168.1.10","destination_ip":"192.168.1.1","protocol":"TCP","destination_port":443,"event_type":"web_access","severity":"low","label":"Normal"},
+    {"event_id":"NET002","category":"network","timestamp":"2026-11-12T09:05:00Z","source_ip":"192.168.1.15","destination_ip":"192.168.1.5","protocol":"TCP","destination_port":80,"event_type":"web_access","severity":"low","label":"Normal"},
+    {"event_id":"NET003","category":"network","timestamp":"2026-11-12T09:10:00Z","source_ip":"192.168.1.20","destination_ip":"192.168.1.8","protocol":"UDP","destination_port":53,"event_type":"dns_query","severity":"low","label":"Normal"},
+    {"event_id":"NET004","category":"network","timestamp":"2026-11-12T09:15:00Z","source_ip":"198.51.100.77","destination_ip":"192.168.1.10","protocol":"TCP","destination_port":22,"event_type":"repeated_connection_attempts","severity":"high","label":"Suspicious"},
+    {"event_id":"NET005","category":"network","timestamp":"2026-11-12T09:20:00Z","source_ip":"203.0.113.60","destination_ip":"192.168.1.20","protocol":"TCP","destination_port":445,"event_type":"port_scan","severity":"critical","label":"Suspicious"},
+    {"event_id":"NET006","category":"network","timestamp":"2026-11-12T09:25:00Z","source_ip":"192.168.1.25","destination_ip":"192.168.1.1","protocol":"TCP","destination_port":443,"event_type":"web_access","severity":"low","label":"Normal"},
+    {"event_id":"NET007","category":"network","timestamp":"2026-11-12T09:30:00Z","source_ip":"203.0.113.90","destination_ip":"192.168.1.15","protocol":"TCP","destination_port":3389,"event_type":"unauthorized_access_attempt","severity":"high","label":"Suspicious"},
+    {"event_id":"NET008","category":"network","timestamp":"2026-11-12T09:35:00Z","source_ip":"192.168.1.30","destination_ip":"192.168.1.8","protocol":"UDP","destination_port":53,"event_type":"dns_query","severity":"low","label":"Normal"},
+    {"event_id":"NET009","category":"network","timestamp":"2026-11-12T09:40:00Z","source_ip":"198.51.100.44","destination_ip":"192.168.1.10","protocol":"TCP","destination_port":8080,"event_type":"unusual_data_transfer","bytes_transferred":950000,"severity":"high","label":"Suspicious"},
+    {"event_id":"NET010","category":"network","timestamp":"2026-11-12T09:45:00Z","source_ip":"192.168.1.10","destination_ip":"192.168.1.5","protocol":"TCP","destination_port":443,"event_type":"web_access","severity":"low","label":"Normal"}
+  ]
+}
