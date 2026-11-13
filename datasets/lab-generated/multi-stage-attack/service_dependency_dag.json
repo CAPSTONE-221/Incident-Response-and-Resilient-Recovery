@@ -1,0 +1,70 @@
+{
+  "topology_name": "Enterprise 4-Tier Business Service Architecture",
+  "version": "1.0",
+  "criticality_levels": {
+    "TIER_1": { "weight": 1.0, "max_downtime_minutes": 60, "description": "Mission-Critical Core (Identity, DB)" },
+    "TIER_2": { "weight": 0.7, "max_downtime_minutes": 180, "description": "Core Business APIs and Storage" },
+    "TIER_3": { "weight": 0.4, "max_downtime_minutes": 480, "description": "Customer Web Interfaces and Reporting" }
+  },
+  "nodes": [
+    {
+      "service_id": "SVC_AUTH_AD",
+      "service_name": "Active Directory / Kerberos KDC",
+      "tier": "TIER_1",
+      "host_ip": "192.168.56.10",
+      "dependencies": [],
+      "requires_human_approval_to_restore": true,
+      "estimated_restore_time_sec": 300
+    },
+    {
+      "service_id": "SVC_CORE_DB",
+      "service_name": "PostgreSQL Primary Cluster",
+      "tier": "TIER_1",
+      "host_ip": "192.168.56.20",
+      "dependencies": ["SVC_AUTH_AD"],
+      "requires_human_approval_to_restore": true,
+      "estimated_restore_time_sec": 450
+    },
+    {
+      "service_id": "SVC_CACHE_REDIS",
+      "service_name": "Redis Session & Transaction Cache",
+      "tier": "TIER_2",
+      "host_ip": "192.168.56.25",
+      "dependencies": ["SVC_AUTH_AD"],
+      "requires_human_approval_to_restore": false,
+      "estimated_restore_time_sec": 120
+    },
+    {
+      "service_id": "SVC_BACKEND_API",
+      "service_name": "Enterprise Payment & Booking Backend",
+      "tier": "TIER_2",
+      "host_ip": "192.168.56.30",
+      "dependencies": ["SVC_CORE_DB", "SVC_CACHE_REDIS"],
+      "requires_human_approval_to_restore": false,
+      "estimated_restore_time_sec": 240
+    },
+    {
+      "service_id": "SVC_WEB_FRONTEND",
+      "service_name": "Public NGINX Reverse Proxy & Web UI",
+      "tier": "TIER_3",
+      "host_ip": "192.168.56.40",
+      "dependencies": ["SVC_BACKEND_API"],
+      "requires_human_approval_to_restore": false,
+      "estimated_restore_time_sec": 90
+    },
+    {
+      "service_id": "SVC_ANALYTICS",
+      "service_name": "Reporting & Business Intelligence",
+      "tier": "TIER_3",
+      "host_ip": "192.168.56.50",
+      "dependencies": ["SVC_CORE_DB"],
+      "requires_human_approval_to_restore": false,
+      "estimated_restore_time_sec": 600
+    }
+  ],
+  "validation_constraints": {
+    "strict_topological_order": true,
+    "min_recovery_trust_score": 0.75,
+    "quarantine_network_isolation_during_restore": true
+  }
+}
