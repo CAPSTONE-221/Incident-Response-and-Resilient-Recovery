@@ -1,0 +1,119 @@
+{
+  "dataset_name": "UNSW-NB15 (Processed)",
+  "intended_agent": "Triage Agent (Incident Classification & Severity)",
+  "features_count": 41,
+  "feature_names": [
+    "dur",
+    "spkts",
+    "dpkts",
+    "sbytes",
+    "dbytes",
+    "rate",
+    "sttl",
+    "dttl",
+    "sload",
+    "dload",
+    "sinpkt",
+    "dinpkt",
+    "sjit",
+    "djit",
+    "swin",
+    "stcpb",
+    "dtcpb",
+    "dwin",
+    "tcprtt",
+    "synack",
+    "ackdat",
+    "smean",
+    "dmean",
+    "trans_depth",
+    "response_body_len",
+    "ct_srv_src",
+    "ct_state_ttl",
+    "ct_dst_ltm",
+    "ct_src_dport_ltm",
+    "ct_dst_sport_ltm",
+    "ct_dst_src_ltm",
+    "is_ftp_login",
+    "ct_flw_http_mthd",
+    "ct_src_ltm",
+    "ct_srv_dst",
+    "is_sm_ips_ports",
+    "proto",
+    "service",
+    "state",
+    "attack_cat",
+    "label"
+  ],
+  "split_statistics": {
+    "total_samples": 162745,
+    "train_samples": 113921,
+    "train_percent": 70.0,
+    "val_samples": 24412,
+    "val_percent": 15.0,
+    "test_samples": 24412,
+    "test_percent": 15.0
+  },
+  "class_imbalance_binary": {
+    "target_column": "label",
+    "num_classes": 2,
+    "class_counts": {
+      "0": 60005,
+      "1": 53916
+    },
+    "class_proportions": {
+      "0": 0.5267,
+      "1": 0.4733
+    },
+    "class_weights": {
+      "0": 0.9493,
+      "1": 1.0565
+    },
+    "imbalance_ratio": 1.11
+  },
+  "class_imbalance_multiclass": {
+    "target_column": "attack_cat",
+    "num_classes": 10,
+    "class_counts": {
+      "Normal": 60005,
+      "Exploits": 19204,
+      "Fuzzers": 14672,
+      "Reconnaissance": 6994,
+      "Generic": 5319,
+      "DoS": 3850,
+      "Analysis": 1422,
+      "Backdoor": 1316,
+      "Shellcode": 1019,
+      "Worms": 120
+    },
+    "class_proportions": {
+      "Normal": 0.5267,
+      "Exploits": 0.1686,
+      "Fuzzers": 0.1288,
+      "Reconnaissance": 0.0614,
+      "Generic": 0.0467,
+      "DoS": 0.0338,
+      "Analysis": 0.0125,
+      "Backdoor": 0.0116,
+      "Shellcode": 0.0089,
+      "Worms": 0.0011
+    },
+    "class_weights": {
+      "Analysis": 8.0113,
+      "Backdoor": 8.6566,
+      "DoS": 2.959,
+      "Exploits": 0.5932,
+      "Fuzzers": 0.7765,
+      "Generic": 2.1418,
+      "Normal": 0.1899,
+      "Reconnaissance": 1.6288,
+      "Shellcode": 11.1797,
+      "Worms": 94.9342
+    },
+    "imbalance_ratio": 500.04
+  },
+  "artifacts": {
+    "scaler": "d:\\Capstone-221\\Incident-Response-and-Resilient-Recovery\\preprocessing\\artifacts\\unsw_nb15_RobustScaler.joblib",
+    "encoders": "d:\\Capstone-221\\Incident-Response-and-Resilient-Recovery\\preprocessing\\artifacts\\unsw_nb15_encoders.joblib"
+  }
+}
