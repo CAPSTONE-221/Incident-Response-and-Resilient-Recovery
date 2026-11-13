@@ -67,3 +67,4 @@ class FeatureSelector:
 
     def fit_transform(self, df: pd.DataFrame) -> pd.DataFrame:
         return self.fit(df).transform(df)
+

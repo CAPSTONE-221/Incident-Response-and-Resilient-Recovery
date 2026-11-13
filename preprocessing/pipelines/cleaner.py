@@ -81,3 +81,4 @@ class DataCleaner:
 
     def fit_transform(self, df: pd.DataFrame) -> pd.DataFrame:
         return self.fit(df).transform(df, is_train=True)
+
