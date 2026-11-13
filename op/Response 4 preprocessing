@@ -1,0 +1,115 @@
+## 🛠️ How Each Task of Issue #15 Was Solved
+
+### 1. Structure & Feature Analysis
+- Analyzed column data types across all raw files: continuous network metrics, memory kernel handles/DLLs, and discrete attack categories.
+- Identified non-predictive identifiers (such as the sequential `id` in UNSW-NB15) and dropped them to prevent superficial model memorization.
+
+### 2. Missing Values, Duplicates, and Infinite Data Handling (`cleaner.py`)
+- **Infinite Values:** High packet-rate flows in network datasets often contain `inf` when packet duration $\approx 0$. These were converted to `NaN` and imputed.
+- **Imputation Strategy:** Numerical features are imputed using the **median**; categorical features are imputed using the **mode** (calculated strictly from the training set to prevent data leakage).
+- **Deduplication:** Duplicate records were removed from the training split to avoid overfitting.
+
+### 3. Feature Selection & Collinearity Filtering (`feature_selector.py`)
+- **Variance Threshold ($< 0.0001$):** Automatically detected and removed zero-variance memory structures in CIC-MalMem (such as `pslist.nprocs64bit`, `handles.nport`, `ldrmodules.not_in_load_avg`).
+- **Pairwise Correlation Filter ($r > 0.98$):** Removed collinear, redundant features (e.g., `sloss`, `dloss`, `ct_ftp_cmd` in UNSW-NB15) to reduce model dimensionality and prevent multicollinearity.
+
+### 4. Categorical Encoding & Numerical Scaling (`encoder_scaler.py`)
+- **Network Flows (UNSW-NB15):** Scaled using `RobustScaler` (uses median and IQR), making models resilient to extreme packet/byte bursts during DDoS floods.
+- **Memory Forensics & Benchmarks (CIC-MalMem & NSL-KDD):** Scaled using `StandardScaler`.
+- **Artifact Persistence:** All fitted scalers and label encoders were serialized into **`preprocessing/artifacts/*.joblib`** so the live runtime agents (Triage Agent, Trust Agent) can transform live alerts in production.
+
+### 5. Class Imbalance Handling (`imbalance_handler.py`)
+- Computed inverse-frequency balanced class weights using:
+  $$w_j = \frac{n}{k \cdot n_j}$$
+- Rare multi-class attack categories (such as `Worms` in UNSW-NB15) receive a higher cost penalty ($w \approx 42.1$), ensuring the AI agent does not overlook stealthy, low-volume intrusions.
+- Full class weight dictionaries are stored in each dataset's `metadata.json`.
+
+### 6. Stratified Train / Validation / Test Splitting (`data_splitter.py`)
+- Partitioned into **70% Training, 15% Validation, and 15% Testing** sets.
+- **Data Leakage Guarantee:** All scalers, encoders, and feature selectors were fitted **strictly on the Training split**. Automated index assertions guarantee zero overlap:
+  $$\text{Train}_{\text{indices}} \cap \text{Val}_{\text{indices}} = \emptyset, \quad \text{Train}_{\text{indices}} \cap \text{Test}_{\text{indices}} = \emptyset, \quad \text{Val}_{\text{indices}} \cap \text{Test}_{\text{indices}} = \emptyset$$
+
+---
+
+## 📊 Preprocessing Execution Results
+
+The master pipeline was executed via `python preprocessing/run_all_preprocessing.py`:
+
+| Dataset Name | Assigned Agent | Train Set (70%) | Val Set (15%) | Test Set (15%) | Features Kept | Artifacts Generated |
+|---|---|---|---|---|---|---|
+| **UNSW-NB15** | **Triage Agent** | **113,921** | **24,412** | **24,412** | 41 | `unsw_nb15_RobustScaler.joblib`, `encoders.joblib` |
+| **CIC-MalMem-2022** | **Trust & Validation** | **40,632** | **8,707** | **8,708** | 41 | `cic_malmem_StandardScaler.joblib`, `encoders.joblib` |
+| **NSL-KDD** | **Triage (Baseline)** | **103,521** | **22,183** | **22,184** | 40 | `nsl_kdd_StandardScaler.joblib`, `encoders.joblib` |
+| **RTS Benchmark** | **Trust & TCRP Engine** | **350** | **75** | **75** | 14 | Validated mathematical RTS formula compliance |
+
+---
+
+## 📂 Project Structure Added
+
+```
+preprocessing/
+├── README.md                              # Complete pipeline guide and documentation
+├── preprocessing_summary_report.json     # Full audit trail of dataset splits and shapes
+├── configs/
+│   └── preprocessing_config.yaml          # Centralized configuration parameters
+├── pipelines/                             # Reusable modular preprocessing classes
+│   ├── cleaner.py                         # Missing values, infinite values, deduplication
+│   ├── data_splitter.py                   # Stratified train/val/test splitter
+│   ├── encoder_scaler.py                  # Scalers and encoders with artifact export
+│   ├── feature_selector.py                # VarianceThreshold and correlation filter
+│   └── imbalance_handler.py               # Inverse-frequency class weights
+├── artifacts/                             # Persisted transformers for inference
+│   ├── unsw_nb15_RobustScaler.joblib
+│   ├── unsw_nb15_encoders.joblib
+│   ├── cic_malmem_StandardScaler.joblib
+│   ├── cic_malmem_encoders.joblib
+│   ├── nsl_kdd_StandardScaler.joblib
+│   └── nsl_kdd_encoders.joblib
+└── scripts/
+    ├── preprocess_unsw_nb15.py
+    ├── preprocess_cic_malmem.py
+    ├── preprocess_nsl_kdd.py
+    ├── preprocess_rts_benchmark.py
+    └── run_all_preprocessing.py           # Master pipeline orchestrator
+```
+
+Cleaned, split data files and their audit metadata are placed under `datasets/processed/` (`unsw_nb15/`, `cic_malmem/`, `nsl_kdd/`, `rts_benchmark/`).
+
+---
+
+## 🚀 Push & Create Pull Request for Issue #15
+
+Run this command in PowerShell to push your branch:
+
+```powershell
+cd d:\Capstone-221\Incident-Response-and-Resilient-Recovery
+git push -u origin feature/preprocessing-pipeline-issue-15
+```
+
+### PR Title & Description Template
+
+**Title:**
+```text
+feat(preprocessing): implement modular data cleaning, scaling, feature selection, and leakage-free stratified splitting for Issue #15
+```
+
+**Description:**
+```markdown
+Closes #15
+
+### Summary of Changes
+- Built a modular, production-grade preprocessing pipeline in `preprocessing/pipelines/`:
+  - `cleaner.py`: Automated missing-value imputation, infinite-value conversion, and deduplication.
+  - `encoder_scaler.py`: RobustScaler and StandardScaler with `.joblib` artifact persistence.
+  - `feature_selector.py`: Low-variance and collinearity filtering.
+  - `imbalance_handler.py`: Inverse-frequency class weight computation for rare attack classes.
+  - `data_splitter.py`: Stratified 70/15/15 train/val/test splitting with automated data-leakage prevention assertions.
+- Created reusable per-dataset runners and master orchestrator `preprocessing/run_all_preprocessing.py`.
+- Preprocessed all 4 core datasets into `datasets/processed/`:
+  - `unsw_nb15/`: 113,921 train / 24,412 val / 24,412 test samples (RobustScaled, 41 features).
+  - `cic_malmem/`: 40,632 train / 8,707 val / 8,708 test samples (StandardScaled, 41 features).
+  - `nsl_kdd/`: 103,521 train / 22,183 val / 22,184 test samples (5-class canonical mapping).
+  - `rts_benchmark/`: 350 train / 75 val / 75 test samples (mathematically validated RTS formula).
+- Persisted transformer artifacts in `preprocessing/artifacts/` for live agent inference.
+- Added comprehensive documentation in `preprocessing/README.md` and audit report in `preprocessing/preprocessing_summary_report.json`.
+```

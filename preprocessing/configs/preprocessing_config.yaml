@@ -1,0 +1,54 @@
+# Preprocessing Pipeline Configuration
+# Project: Trust-Aware Agentic AI for Autonomous Cyber Incident Response and Resilient Recovery
+# Team ID: 221
+
+global:
+  random_seed: 42
+  train_ratio: 0.70
+  val_ratio: 0.15
+  test_ratio: 0.15
+  artifacts_dir: "preprocessing/artifacts"
+  output_base_dir: "datasets/processed"
+
+datasets:
+  unsw_nb15:
+    source_train: "datasets/public/unsw-nb15/UNSW_NB15_training-set.csv"
+    source_test: "datasets/public/unsw-nb15/UNSW_NB15_testing-set.csv"
+    drop_columns: ["id"]
+    target_binary: "label"
+    target_multiclass: "attack_cat"
+    categorical_columns: ["proto", "service", "state"]
+    scaler_type: "RobustScaler" # Robust to high network flow outliers
+    variance_threshold: 0.0001
+    correlation_threshold: 0.98
+
+  cic_malmem:
+    source_csv: "datasets/public/cic-malmem-2022/Obfuscated-MalMem2022.csv"
+    target_binary: "Class"
+    target_category: "Category"
+    scaler_type: "StandardScaler"
+    variance_threshold: 0.0001
+    correlation_threshold: 0.98
+
+  nsl_kdd:
+    source_train: "datasets/public/nsl-kdd/KDDTrain+.txt"
+    source_test: "datasets/public/nsl-kdd/KDDTest+.txt"
+    categorical_columns: ["protocol_type", "service", "flag"]
+    scaler_type: "StandardScaler"
+    target_column: "attack_class"
+    variance_threshold: 0.0001
+
+  rts_benchmark:
+    source_csv: "datasets/lab-generated/backup-trust-validation/synthetic_rts_benchmark.csv"
+    target_state: "trust_state"
+    target_ground_truth: "ground_truth_is_clean"
+    features: [
+      "integrity_confidence_I",
+      "temporal_validity_V",
+      "threat_free_confidence_T",
+      "forensic_provenance_F",
+      "reinfection_risk_R",
+      "base_trust",
+      "recovery_trust_score_RTS"
+    ]
+

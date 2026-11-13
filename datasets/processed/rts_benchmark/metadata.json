@@ -1,0 +1,40 @@
+{
+  "dataset_name": "Recovery Trust Score (RTS) Benchmark (Processed)",
+  "intended_agent": "Trust Agent (RTS Scoring) & Recovery Planner (Safe Selection)",
+  "features_count": 15,
+  "split_statistics": {
+    "total_samples": 500,
+    "train_samples": 350,
+    "train_percent": 70.0,
+    "val_samples": 75,
+    "val_percent": 15.0,
+    "test_samples": 75,
+    "test_percent": 15.0
+  },
+  "trust_state_distribution": {
+    "target_column": "trust_state",
+    "num_classes": 3,
+    "class_counts": {
+      "UNTRUSTED": 176,
+      "TRUSTED": 148,
+      "UNCERTAIN": 26
+    },
+    "class_proportions": {
+      "UNTRUSTED": 0.5029,
+      "TRUSTED": 0.4229,
+      "UNCERTAIN": 0.0743
+    },
+    "class_weights": {
+      "TRUSTED": 0.7883,
+      "UNCERTAIN": 4.4872,
+      "UNTRUSTED": 0.6629
+    },
+    "imbalance_ratio": 6.77
+  },
+  "formula": "BaseTrust = 0.30*I + 0.30*V + 0.25*T + 0.15*F; RTS = BaseTrust * (1 - R)",
+  "gates": {
+    "tau_high": 0.75,
+    "tau_low": 0.4,
+    "hard_security_override": true
+  }
+}

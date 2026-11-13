@@ -20,3 +20,5 @@ data/raw/
 !public/*/*.json
 !lab-generated/*/*.csv
 !lab-generated/*/*.json
+!processed/*/*.csv
+!processed/*/*.json

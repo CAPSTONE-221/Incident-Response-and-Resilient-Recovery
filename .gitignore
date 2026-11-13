@@ -1,0 +1,16 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.tmp
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+
+# IDE settings
+.vscode/
+.idea/
+

@@ -1,0 +1,61 @@
+{
+  "dataset_name": "NSL-KDD (Processed)",
+  "intended_agent": "Triage Agent (Fast Baseline Benchmark)",
+  "features_count": 37,
+  "split_statistics": {
+    "total_samples": 147888,
+    "train_samples": 103521,
+    "train_percent": 70.0,
+    "val_samples": 22183,
+    "val_percent": 15.0,
+    "test_samples": 22184,
+    "test_percent": 15.0
+  },
+  "class_imbalance_binary": {
+    "target_column": "is_attack",
+    "num_classes": 2,
+    "class_counts": {
+      "0": 53877,
+      "1": 49644
+    },
+    "class_proportions": {
+      "0": 0.5204,
+      "1": 0.4796
+    },
+    "class_weights": {
+      "0": 0.9607,
+      "1": 1.0426
+    },
+    "imbalance_ratio": 1.09
+  },
+  "class_imbalance_5class": {
+    "target_column": "attack_class",
+    "num_classes": 5,
+    "class_counts": {
+      "normal": 53877,
+      "dos": 37089,
+      "probe": 9755,
+      "r2l": 2624,
+      "u2r": 176
+    },
+    "class_proportions": {
+      "normal": 0.5204,
+      "dos": 0.3583,
+      "probe": 0.0942,
+      "r2l": 0.0253,
+      "u2r": 0.0017
+    },
+    "class_weights": {
+      "dos": 0.5582,
+      "normal": 0.3843,
+      "probe": 2.1224,
+      "r2l": 7.8903,
+      "u2r": 117.6375
+    },
+    "imbalance_ratio": 306.12
+  },
+  "artifacts": {
+    "scaler": "d:\\Capstone-221\\Incident-Response-and-Resilient-Recovery\\preprocessing\\artifacts\\nsl_kdd_StandardScaler.joblib",
+    "encoders": "d:\\Capstone-221\\Incident-Response-and-Resilient-Recovery\\preprocessing\\artifacts\\nsl_kdd_encoders.joblib"
+  }
+}

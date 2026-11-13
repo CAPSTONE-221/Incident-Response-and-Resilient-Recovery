@@ -1,0 +1,100 @@
+{
+  "dataset_name": "CIC-MalMem-2022 (Processed)",
+  "intended_agent": "Trust Agent (RTS Threat-Free Confidence T) & Validation Agent",
+  "features_count": 40,
+  "feature_names": [
+    "pslist.nproc",
+    "pslist.nppid",
+    "pslist.avg_threads",
+    "pslist.avg_handlers",
+    "dlllist.ndlls",
+    "dlllist.avg_dlls_per_proc",
+    "handles.nhandles",
+    "handles.nfile",
+    "handles.nevent",
+    "handles.ndesktop",
+    "handles.nkey",
+    "handles.nthread",
+    "handles.nsemaphore",
+    "handles.ntimer",
+    "handles.nsection",
+    "handles.nmutant",
+    "ldrmodules.not_in_load",
+    "ldrmodules.not_in_init_avg",
+    "malfind.ninjections",
+    "malfind.commitCharge",
+    "malfind.uniqueInjections",
+    "psxview.not_in_pslist",
+    "psxview.not_in_eprocess_pool",
+    "psxview.not_in_ethread_pool",
+    "psxview.not_in_pslist_false_avg",
+    "psxview.not_in_ethread_pool_false_avg",
+    "psxview.not_in_deskthrd_false_avg",
+    "modules.nmodules",
+    "svcscan.nservices",
+    "svcscan.kernel_drivers",
+    "svcscan.fs_drivers",
+    "svcscan.process_services",
+    "svcscan.shared_process_services",
+    "svcscan.nactive",
+    "callbacks.ncallbacks",
+    "callbacks.nanonymous",
+    "callbacks.ngeneric",
+    "malware_type",
+    "malware_family",
+    "is_malware"
+  ],
+  "split_statistics": {
+    "total_samples": 58047,
+    "train_samples": 40632,
+    "train_percent": 70.0,
+    "val_samples": 8707,
+    "val_percent": 15.0,
+    "test_samples": 8708,
+    "test_percent": 15.0
+  },
+  "class_imbalance_binary": {
+    "target_column": "is_malware",
+    "num_classes": 2,
+    "class_counts": {
+      "0": 20461,
+      "1": 20171
+    },
+    "class_proportions": {
+      "0": 0.5036,
+      "1": 0.4964
+    },
+    "class_weights": {
+      "0": 0.9929,
+      "1": 1.0072
+    },
+    "imbalance_ratio": 1.01
+  },
+  "class_imbalance_malware_type": {
+    "target_column": "malware_type",
+    "num_classes": 4,
+    "class_counts": {
+      "Benign": 20461,
+      "Spyware": 6867,
+      "Ransomware": 6668,
+      "Trojan": 6636
+    },
+    "class_proportions": {
+      "Benign": 0.5036,
+      "Spyware": 0.169,
+      "Ransomware": 0.1641,
+      "Trojan": 0.1633
+    },
+    "class_weights": {
+      "Benign": 0.4965,
+      "Ransomware": 1.5234,
+      "Spyware": 1.4792,
+      "Trojan": 1.5307
+    },
+    "imbalance_ratio": 3.08
+  },
+  "artifacts": {
+    "scaler": "d:\\Capstone-221\\Incident-Response-and-Resilient-Recovery\\preprocessing\\artifacts\\cic_malmem_StandardScaler.joblib",
+    "encoders": "d:\\Capstone-221\\Incident-Response-and-Resilient-Recovery\\preprocessing\\artifacts\\cic_malmem_encoders.joblib"
+  }
+}
