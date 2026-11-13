@@ -124,3 +124,4 @@ def _validate_stix(path):
 
 if __name__ == "__main__":
     verify_all()
+

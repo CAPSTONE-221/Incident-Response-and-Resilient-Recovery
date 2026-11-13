@@ -38,3 +38,4 @@ python datasets/scripts/download_all.py --dataset cic-malmem-2022
 # Or download directly from Kaggle:
 kaggle datasets download -d dhoogla/cic-malmem-2022 -p datasets/public/cic-malmem-2022/ --unzip
 ```
+

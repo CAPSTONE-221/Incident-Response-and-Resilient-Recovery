@@ -62,3 +62,4 @@ def validate_stix(file_path: str):
 if __name__ == "__main__":
     download_file(STIX_URL, TARGET_FILE)
     validate_stix(TARGET_FILE)
+

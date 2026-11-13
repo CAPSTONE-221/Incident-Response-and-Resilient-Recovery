@@ -1,4 +1,4 @@
-# Ignore large raw dataset archives and dumps
+# Ignore raw binary archives, memory dumps and large packet captures
 *.pcap
 *.pcapng
 *.zip
@@ -11,21 +11,12 @@
 *.vmdk
 *.iso
 *.parquet
-
-# Ignore giant raw CSV / text dumps exceeding GitHub limits
-# Keep schemas, samples, scripts, and markdown documentation
 *.dump
 data/raw/
-public/*/*.csv
-public/*/*.txt
-public/*/# Large generated or downloaded files (> 50 MB)
-enterprise-attack.json
-*.json.gz
-*.tar.bz2
 
-
-# Allow small sample files and configs
-!sample_*.csv
-!sample_*.json
-!schema_*.json
-!requirements.txt
+# Allow dataset CSVs, JSONs, and text files under GitHub's 100MB limit
+!public/*/*.csv
+!public/*/*.txt
+!public/*/*.json
+!lab-generated/*/*.csv
+!lab-generated/*/*.json

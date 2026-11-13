@@ -28,3 +28,4 @@ aws s3 ls --no-sign-request s3://cse-cic-ids2018/
 # Download processed CSV files for machine learning:
 aws s3 cp --no-sign-request "s3://cse-cic-ids2018/Processed Traffic Data for ML Algorithms/" ./datasets/public/cse-cic-ids2018/ --recursive
 ```
+

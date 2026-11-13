@@ -149,3 +149,4 @@ if __name__ == "__main__":
     print(df["trust_state"].value_counts())
     print("\n[+] Sample Records:")
     print(df[["recovery_point_id", "scenario", "recovery_trust_score_RTS", "trust_state", "policy_recommendation"]].head(6).to_string(index=False))
+

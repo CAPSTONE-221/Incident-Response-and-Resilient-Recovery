@@ -28,3 +28,4 @@ Created by the Cyber Range Lab of the Australian Centre for Cyber Security (ACCS
 ```bash
 python datasets/scripts/download_all.py --dataset unsw-nb15
 ```
+

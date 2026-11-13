@@ -87,3 +87,4 @@ if __name__ == "__main__":
     print(f"\n[i] Cleaning up sandbox directory: {sandbox}")
     import shutil
     shutil.rmtree(sandbox, ignore_errors=True)
+

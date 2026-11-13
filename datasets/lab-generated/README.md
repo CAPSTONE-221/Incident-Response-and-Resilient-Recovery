@@ -74,3 +74,4 @@ To enable agent training and mathematical formula validation immediately (before
 python datasets/lab-generated/backup-trust-validation/generate_synthetic_rts_eval.py
 ```
 This produces 500 validated candidate recovery points modeling clean, poisoned, and uncertain backup scenarios.
+

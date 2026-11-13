@@ -20,3 +20,4 @@ $$\min_{\pi} \left[ \alpha \cdot \text{SecurityRisk}(\pi) + \beta \cdot \text{Bu
 2. Topological dependency ordering: If $S_A \to S_B$, $S_A$ must achieve `VALIDATED_ONLINE` before $S_B$ restore begins.
 3. Policy gates: High-impact nodes (Tier-1) require operator approval before network un-quarantine.
 4. Blast radius constraint: No restorative action may trigger unverified routing across compromised subnet boundaries.
+

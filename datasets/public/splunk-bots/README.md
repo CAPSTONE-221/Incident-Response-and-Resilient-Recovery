@@ -25,3 +25,4 @@ Splunk Boss of the SOC (BOTS) datasets are realistic SIEM datasets created for C
 ```bash
 python datasets/scripts/download_all.py --dataset splunk-bots
 ```
+

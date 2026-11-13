@@ -27,3 +27,4 @@ To evaluate our agentic incident response and resilient recovery system under th
 
 ## Simulation Script
 A safe lab simulation script is provided in `simulate_ransomware_activity.py` which encrypts only dummy canary files inside a dedicated sandbox directory while recording detailed forensic timestamps.
+

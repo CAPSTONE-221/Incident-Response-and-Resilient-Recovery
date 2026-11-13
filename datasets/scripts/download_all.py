@@ -222,3 +222,4 @@ if __name__ == "__main__":
         print("\nUsage example:")
         print("  python datasets/scripts/download_all.py --dataset mitre-attack-stix")
         print("  python datasets/scripts/download_all.py --dataset all")
+

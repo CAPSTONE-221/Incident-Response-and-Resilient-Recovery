@@ -32,3 +32,4 @@ python datasets/lab-generated/backup-trust-validation/generate_synthetic_rts_eva
 Outputs `synthetic_rts_benchmark.csv` containing:
 - 500 candidate recovery points across 6 realistic operational failure modes.
 - Continuous parameters ($I, V, T, F, R$), calculated RTS, policy state, and ground-truth cleanliness.
+
