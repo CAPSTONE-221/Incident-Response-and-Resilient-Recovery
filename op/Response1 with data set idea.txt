@@ -1,0 +1,305 @@
+Project Deep Dive & Dataset Collection (Issue #14)
+1. Complete Understanding of the Project
+1.1 The Core Problem
+
+Traditional cybersecurity focuses on perimeter defense and intrusion detection. However, modern multi-stage attacks and ransomware inevitably breach preventive controls. Once a compromise occurs:
+
+Traditional SOAR (Security Orchestration, Automation, and Response) relies on static playbooks that cannot adapt to evolving adversary behavior.
+Operators do not know what assets, telemetry sources, and backup snapshots remain trustworthy.
+Restoring the newest backup often results in contaminated recovery (re-infecting clean environments with dormant backdoors or encrypted payloads).
+Mean Time to Respond (MTTR) and recovery times escalate to days or weeks.
+1.2 The Core Novel Contribution: Trust-Conditioned Recovery Planning (TCRP)
+
+Your project does not simply string together LLMs with APIs; it introduces a mathematical decision mechanism: TCRP. TCRP dynamically evaluates the trustworthiness of candidate recovery points and affected assets, enforces policy gates, and optimizes service restoration in dependency order.
+
+Recovery Trust Score (RTS) Formulation
+
+BaseTrust
+=
+𝑤
+1
+𝐼
++
+𝑤
+2
+𝑉
++
+𝑤
+3
+𝑇
++
+𝑤
+4
+𝐹
+BaseTrust=w
+1
+	​
+
+I+w
+2
+	​
+
+V+w
+3
+	​
+
+T+w
+4
+	​
+
+F
+RTS
+=
+BaseTrust
+×
+(
+1
+−
+𝑅
+)
+RTS=BaseTrust×(1−R)
+
+𝐼
+∈
+[
+0
+,
+1
+]
+I∈[0,1] (Integrity Confidence): Hash verification, filesystem consistency, restore tests.
+𝑉
+∈
+[
+0
+,
+1
+]
+V∈[0,1] (Temporal Validity): Distance between backup timestamp and estimated compromise window start.
+𝑇
+∈
+[
+0
+,
+1
+]
+T∈[0,1] (Threat-Free Confidence): Memory analysis, IOC scans, YARA rules, encryption indicators.
+𝐹
+∈
+[
+0
+,
+1
+]
+F∈[0,1] (Forensic/Provenance Confidence): Audit logs, chain of custody, independent telemetry corroboration.
+𝑅
+∈
+[
+0
+,
+1
+]
+R∈[0,1] (Reinfection Risk): Multiplicative risk gate (backup server access, exposed credentials, compromised upstream dependencies).
+𝑤
+𝑖
+≥
+0
+,
+∑
+𝑤
+𝑖
+=
+1
+w
+i
+	​
+
+≥0,∑w
+i
+	​
+
+=1 (
+𝑤
+1
+=
+0.30
+,
+𝑤
+2
+=
+0.30
+,
+𝑤
+3
+=
+0.25
+,
+𝑤
+4
+=
+0.15
+w
+1
+	​
+
+=0.30,w
+2
+	​
+
+=0.30,w
+3
+	​
+
+=0.25,w
+4
+	​
+
+=0.15).
+Trust States & Policy Actions
+TRUSTED (
+RTS
+≥
+𝜏
+ℎ
+𝑖
+𝑔
+ℎ
+=
+0.75
+RTS≥τ
+high
+	​
+
+=0.75, no hard violation): Eligible for autonomous restoration.
+UNCERTAIN (
+0.40
+≤
+RTS
+<
+0.75
+0.40≤RTS<0.75): Quarantined; requires human approval and sandbox verification.
+UNTRUSTED (
+RTS
+<
+0.40
+RTS<0.40 or hard violation): Excluded from recovery candidates.
+1.3 Insights from Your Repository's Research Papers
+Hammar et al. (NDSS 2026): Demonstrates that fine-tuned 14B models with lookahead planning reduce response hallucination. Gap addressed by your project: Their model assumes backups are inherently trusted; your project adds the recovery trust score layer.
+Tellache et al. (IEEE GLOBECOM 2025): RAG-based CTI retrieval for SIEM alerts using VirusTotal and threat reports. Relevance: Direct blueprint for your CTI and Triage Agent alert-enrichment pipeline.
+Schlette et al. (IEEE S&P 2024): Empirical study of 1,217 SOAR playbooks. Relevance: 96.9% of playbook actions are automated, but they lack dynamic contextual trust evaluation and backup validation.
+NIST SP 800-184: Cybersecurity event recovery lifecycle, backup integrity checks, and dependency maps. Relevance: Foundational standard for defining your recovery metrics and stages.
+Kizhakel & Pande (Discover AI 2026 - CIPHER-A): Counterfactual validation before action execution and adversarial lookahead using MITRE ATT&CK. Relevance: Direct reference for the Counterfactual Validation Engine and Attacker Simulation Agent.
+Zhang et al. (RESS 2026): Multi-source evidence fusion using Dempster-Shafer theory and utility theory to resolve conflicting evidence. Relevance: Informs conflict resolution when telemetry sources may have been tampered with by the adversary.
+2. End-to-End Roadmap: How We Will Complete the Project
+Step-by-Step Milestones
+Phase	Milestone	Deliverables
+Phase 1	Dataset Collection & Infrastructure (Current - Closes #14)	Public datasets documented, STIX 2.1 integrated, downloaders created, lab VM specifications and synthetic RTS benchmark generated.
+Phase 2	Data Cleaning & Feature Engineering (Next Issue)	CICFlowMeter normalization, Sysmon JSON schema mapping, memory forensic feature extraction (CIC-MalMem), and graph adjacency matrix construction.
+Phase 3	Multi-Agent Core Pipeline	Implementation of LangGraph / Autogen agents: Triage Agent, Investigation Agent, Trust Agent, Response Planner, Recovery Planner, Execution Agent, Validation Agent.
+Phase 4	TCRP Engine & Policy Gates	Mathematical RTS scoring module, hard security constraints, topological dependency solver for service recovery, and counterfactual lookahead.
+Phase 5	Lab VM Experiments & Benchmarks	Execution of controlled ransomware scenarios across team VMs; recording MTTR, Contaminated Recovery Rate, and Unsafe-Action Rate against the 4 baselines.
+Phase 6	Final Presentation & Paper	Phase-2 PPT review, final capstone project report, code documentation, and research paper submission.
+3. Dataset Collection & Evaluation (Work Done for Issue #14)
+3.1 Public vs. Lab-Generated Datasets
+
+Public Datasets (Macro & Micro Intrusion Telemetry):
+
+Network Traffic: CIC-IDS-2017, CSE-CIC-IDS-2018, UNSW-NB15, NSL-KDD.
+Malware & Memory Forensics: CIC-MalMem-2022 (Ransomware: Conti, MAZE, Pysa), EMBER 2018 (1.1M PE features).
+Enterprise Security Logs: LANL Cyber (1.64B events across 58 days), Splunk BOTS (v1–v3).
+Threat Intelligence & APT: MITRE ATT&CK STIX 2.1 (26,699 objects), DARPA OpTC (500+ host provenance graphs), OTRF/Mordor, CTU-13.
+
+Lab-Generated Datasets (Recovery & Trust Specific):
+
+Public datasets provide attack logs, but zero public datasets provide candidate recovery points with ground-truth backup contamination status.
+Created full blueprints, simulation scripts, and synthetic benchmark generators in datasets/lab-generated/:
+Ransomware Simulation: Safe canary encryption script (simulate_ransomware_activity.py) that outputs file mutation and entropy logs.
+Backup Trust Validation: Benchmark dataset generator (generate_synthetic_rts_eval.py) that generated synthetic_rts_benchmark.csv with 500 candidate recovery points across 6 operational scenarios.
+Multi-Stage APT & Blast Radius: Enterprise 4-tier service dependency DAG (service_dependency_dag.json) modeling topological restoration constraints.
+3.2 Dataset-to-Agent Architecture Mapping
+Agent	Responsibility	Assigned Datasets
+Triage Agent	Ingestion, alert filtering, severity categorization	CICIDS2017/2018, UNSW-NB15, Splunk BOTS, MITRE CAR
+Investigation Agent	Attack-chain reconstruction, blast radius estimation	DARPA OpTC, LANL Cyber, CTU-13, ATT&CK STIX
+Trust Agent	RTS calculation (
+𝐼
+,
+𝑉
+,
+𝑇
+,
+𝐹
+,
+𝑅
+I,V,T,F,R) & state determination	Lab-Generated RTS Benchmark, CIC-MalMem-2022, EMBER
+Response Planner	Dynamic containment and countermeasure selection	MITRE ATT&CK Mitigations, MITRE D3FEND, CIPHER-A logic
+Recovery Planner	Safe restore point selection & topological ordering	Service Dependency DAG, RTS Validation Dataset
+Execution Agent	Automated orchestration via deterministic policy gates	Atomic Red Team procedures, SOAR playbooks
+Validation Agent	Post-recovery verification and residual compromise testing	CIC-MalMem-2022, post-restore sandbox entropy logs
+4. Repository Structure & Files Created
+
+The complete dataset ecosystem has been structured and committed to the branch dataset/collection-issue-14:
+
+text
+datasets/
+├── .gitignore                                      # Excludes large raw binaries from git
+├── README.md                                       # Master documentation & quickstart
+├── DATASET_CATALOG.md                              # Deep-dive evaluation catalog
+├── public/                                         # Public dataset documentation & configs
+│   ├── cic-malmem-2022/README.md
+│   ├── cicids2017/README.md
+│   ├── cse-cic-ids2018/README.md
+│   ├── ctu13/README.md
+│   ├── darpa-optc/README.md
+│   ├── ember/README.md
+│   ├── lanl-cyber/README.md
+│   ├── mitre-attack-stix/README.md
+│   ├── nsl-kdd/README.md
+│   ├── otrf-security-datasets/README.md
+│   ├── splunk-bots/README.md
+│   └── unsw-nb15/README.md
+├── lab-generated/                                  # Lab VM architecture & blueprints
+│   ├── README.md                                   # VM allocation per laptop
+│   ├── backup-trust-validation/
+│   │   ├── README.md                               # Mathematical formulation of RTS
+│   │   ├── generate_synthetic_rts_eval.py          # Benchmark generation script
+│   │   └── synthetic_rts_benchmark.csv             # 500 generated test recovery points
+│   ├── ransomware-simulation/
+│   │   ├── README.md                               # Controlled simulation guide
+│   │   └── simulate_ransomware_activity.py         # Canary entropy simulation script
+│   └── multi-stage-attack/
+│       ├── README.md                               # Blast radius & dependency theory
+│       └── service_dependency_dag.json             # 4-tier enterprise topology DAG
+└── scripts/                                        # Automation & verification scripts
+    ├── download_all.py                             # Master downloader CLI
+    ├── fetch_mitre_stix.py                         # STIX 2.1 downloader & validator
+    ├── requirements.txt                            # Python dependencies
+    └── verify_datasets.py                          # Dataset health-check utility
+5. Ready for Pull Request
+
+All 27 files are staged and committed on branch dataset/collection-issue-14.
+
+Commands to Push and Open Your PR
+
+Run the following in PowerShell:
+
+powershell
+cd d:\Capstone-221\Incident-Response-and-Resilient-Recovery
+git push -u origin dataset/collection-issue-14
+Suggested PR Title and Description
+
+PR Title: feat(datasets): identify, evaluate, and collect cybersecurity datasets for Issue #14
+
+PR Description:
+
+markdown
+
+Closes #14
+
+Summary of Changes
+Comprehensive research and evaluation of 12 public cybersecurity datasets (CICIDS, UNSW-NB15, DARPA OpTC, LANL Cyber, Splunk BOTS, CIC-MalMem-2022, EMBER, MITRE ATT&CK STIX 2.1).
+Designed lab-generated dataset architectures for Recovery Trust Score (RTS) validation, ransomware entropy telemetry, and enterprise service dependency DAGs.
+Built dataset automation scripts:
+datasets/scripts/download_all.py: Master dataset downloader CLI.
+datasets/scripts/fetch_mitre_stix.py: Automated STIX 2.1 ingestion and validation.
+datasets/scripts/verify_datasets.py: Dataset integrity and schema verification.
+datasets/lab-generated/backup-trust-validation/generate_synthetic_rts_eval.py: Generated 500-sample RTS benchmark dataset.
+Added comprehensive documentation: datasets/README.md and datasets/DATASET_CATALOG.md.

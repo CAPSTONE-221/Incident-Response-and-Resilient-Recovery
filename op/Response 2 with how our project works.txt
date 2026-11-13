@@ -1,0 +1,133 @@
+Here is a concrete, end-to-end walkthrough of how your system handles a real-world enterprise cyberattack.
+
+---
+
+### The Scenario: Ransomware Attack on a Healthcare/Enterprise Portal
+
+**Target Architecture**:
+- **Database Server (`192.168.56.20`)**: Holds patient/financial records.
+- **Web App Server (`192.168.56.30`)**: Public-facing payment and patient booking portal.
+- **Active Directory / Identity (`192.168.56.10`)**: Kerberos/LDAP authentication.
+- **Backup Repository (`192.168.56.50`)**: Scheduled daily snapshots ($RP_1, RP_2, RP_3$).
+
+---
+
+### Timeline of the Incident
+
+```
+Wednesday 10:00 PM      Thursday 03:00 AM      Thursday 04:00 AM      Thursday 05:30 AM
+───────┬────────────────────────┬──────────────────────┬──────────────────────┬────────►
+       │                        │                      │                      │
+Attacker breaches        Attacker steals       Scheduled Backup       Ransomware executes:
+Web Server via CVE       Admin credentials     RP-3 created           Encrypts DB & Web files.
+(Initial Access)         & touches DB          (POISONED BACKUP!)     Alarms trigger in SOC.
+```
+
+---
+
+### How Traditional Systems Fail Here
+- **Traditional SOAR / Human Admin**:
+  1. Sees encrypted files at 05:30 AM.
+  2. Panics and immediately restores the **latest backup** ($RP_3$ from 04:00 AM).
+  3. **Catastrophe (Contaminated Recovery)**: $RP_3$ already contains the attacker's dormant backdoor and encrypted credentials. The attacker reinfects the database within minutes!
+- **Pure LLM Agent**: Hallucinates unconstrained PowerShell commands or tries restoring the web server before the database is up, causing cascading service crashes.
+
+---
+
+### How YOUR Project Solves It: The 7-Agent Workflow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Attacker
+    participant SIEM as Telemetry & SIEM
+    participant Triage as 1. Triage Agent
+    participant Invest as 2. Investigation Agent
+    participant Trust as 3. Trust Agent (RTS)
+    participant Resp as 4. Response Planner
+    participant Recov as 5. Recovery Planner
+    participant Exec as 6. Execution Agent (Policy Gate)
+    participant Valid as 7. Validation Agent
+
+    Attacker->>SIEM: File encryption + C2 beaconing
+    SIEM->>Triage: Suricata Alert + High Entropy File Events
+    Triage->>Invest: Classify: Ransomware (Severity: CRITICAL, 98% Conf)
+    Invest->>Invest: Correlates Sysmon & Auth logs -> Pinpoints Breach Time: Wed 10:00 PM
+    Invest->>Trust: Affected: DB & Web | Candidates: RP-1, RP-2, RP-3
+    Trust->>Trust: Calculate RTS for each backup (RTS Formula)
+    Trust-->>Recov: RP-3: UNTRUSTED (0.17) | RP-2: TRUSTED (0.89)
+    Resp->>Exec: Containment: Sever Web C2 & Isolate DB Subnet
+    Recov->>Exec: Recovery Plan: Restore AD -> DB -> Web (Topological DAG)
+    Exec->>Exec: Policy Gate: Human Approval for Tier-1 DB + Auto-execute Web
+    Exec->>Valid: Systems Restored
+    Valid->>Valid: Scan Memory (CIC-MalMem) + Verify Entropy -> PASS
+```
+
+---
+
+### Step-by-Step Breakdown
+
+#### Step 1: Ingestion & Triage (Triage Agent)
+- **Input**: Mass file renaming (`.locked`), high file entropy (7.98/8.00), and Sysmon Event 11.
+- **Action**: Matches behavior against MITRE ATT&CK `T1486 (Data Encrypted for Impact)`.
+- **Output**: 
+  - Incident Type: `Ransomware / Conti-like`
+  - Severity: `CRITICAL`
+  - Priority: `P1 (Immediate Action Required)`
+
+#### Step 2: Root-Cause & Compromise Window (Investigation Agent)
+- **Action**: Queries LANL/Sysmon authentication graphs and DNS logs backward in time.
+- **Discovery**:
+  - Found initial webshell execution on the Web Server on **Wednesday at 10:00 PM**.
+  - Found lateral movement to the DB Server on **Thursday at 03:00 AM**.
+- **Blast Radius**: Web Server (`192.168.56.30`) and Database (`192.168.56.20`) are compromised. Identity Server (`192.168.56.10`) remains isolated.
+
+#### Step 3: Recovery Trust Scoring (Trust Agent — The Core Novelty)
+The Trust Agent evaluates the 3 candidate backups in storage using your formula:
+$$\text{BaseTrust} = 0.30 I + 0.30 V + 0.25 T + 0.15 F, \quad \text{RTS} = \text{BaseTrust} \times (1 - R)$$
+
+| Backup Candidate | Timestamp | Integrity ($I$) | Validity ($V$) | Threat-Free ($T$) | Provenance ($F$) | Risk ($R$) | Calculated RTS | Decision State |
+|---|---|---|---|---|---|---|---|---|
+| **$RP_3$ (Latest)** | Thu 04:00 AM | $0.98$ (hash matches) | **$0.10$** (after breach!) | **$0.20$** (malware present) | $0.70$ | **$0.75$** | **$0.134$** | **UNTRUSTED (REJECTED)** |
+| **$RP_2$ (Middle)** | Wed 08:00 PM | $0.98$ (hash matches) | **$0.95$** (pre-breach) | **$0.98$** (clean scan) | $0.90$ | **$0.04$** | **$0.923$** | **TRUSTED (APPROVED)** |
+| **$RP_1$ (Oldest)** | Mon 12:00 AM | $0.95$ | $0.99$ | $0.99$ | $0.85$ | $0.02$ | **$0.941$** | **TRUSTED (Too much data loss)** |
+
+- **Why $RP_3$ was rejected**: Even though its filesystem hash was valid ($I=0.98$), because it was created *after* the breach window ($V=0.10$) and reinfection risk was high ($R=0.75$), the multiplicative penalty $(1 - R)$ crushed its score to $0.134 < \tau_{low} (0.40)$.
+- **Selection**: $RP_2$ is selected because it is the **most recent TRUSTED restore point** ($\text{RTS} = 0.923 \ge 0.75$).
+
+#### Step 4: Containment Planning (Response Planner)
+Before touching backups, the Response Planner issues containment commands:
+1. Isolate Database and Web App to an isolated VLAN (MITRE D3FEND `Network Isolation`).
+2. Revoke compromised Active Directory service account tokens.
+3. Block external C2 IP addresses at the perimeter firewall.
+
+#### Step 5: Resilient Recovery Planning (Recovery Planner)
+Rather than restoring all machines in parallel, it solves the constrained optimization problem:
+$$\min (\text{Downtime} + \text{Risk}) \quad \text{subject to Topological DAG}$$
+
+**Restoration Sequence**:
+1. Verify Active Directory (`SVC_AUTH_AD`) is clean.
+2. Restore Database from approved backup $RP_2$ into quarantine.
+3. Apply database transaction redo logs up to Wednesday 09:59 PM (recovering data without replaying the attack).
+4. Restore Web App Server and patch the vulnerable CVE.
+5. Re-attach Web App to Database.
+
+#### Step 6: Policy-Gated Execution (Execution Agent)
+- Low-risk action (Network containment of infected VM): **Executed autonomously**.
+- High-risk action (Overwriting primary database with $RP_2$): **Blocked by Policy Gate** $\to$ Prompts human operator in Slack/SOC console:
+  > *"RTS Score for RP-2 is 0.923 (TRUSTED). Target: Production DB. Approve restore? [Yes / No]"*
+- Operator clicks **"Approve"** $\to$ Orchestration executes via Ansible/VM snapshot API.
+
+#### Step 7: Post-Recovery Validation (Validation Agent)
+- Once restored, before opening public traffic:
+  - Memory analysis using **CIC-MalMem-2022** models verifies that RAM is free from hidden DLL injections or rootkits.
+  - File integrity check confirms canary files are intact and entropy is normal.
+- **Outcome**: Validation Agent issues `STATUS: CLEAN` $\to$ Firewall rule is lifted $\to$ Business is safely back online with **zero reinfection**.
+
+---
+
+### What Makes This a Strong Capstone
+When examiners ask *"What did you build that didn't exist before?"*, your answer is clear:
+1. **You prevented Contaminated Recovery**: Conventional systems restore infected backups; your **RTS formula** mathematically guarantees that post-compromise or poisoned backups are rejected.
+2. **You eliminated LLM Hallucinations**: Responses are constrained by deterministic policy gates and MITRE D3FEND mappings.
+3. **You respected Business Dependencies**: Recovery follows a dependency DAG rather than random service restarts.
