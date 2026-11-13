@@ -1,0 +1,22 @@
+# Ignore raw binary archives, memory dumps and large packet captures
+*.pcap
+*.pcapng
+*.zip
+*.tar
+*.tar.gz
+*.tar.bz2
+*.tgz
+*.7z
+*.raw
+*.vmdk
+*.iso
+*.parquet
+*.dump
+data/raw/
+
+# Allow dataset CSVs, JSONs, and text files under GitHub's 100MB limit
+!public/*/*.csv
+!public/*/*.txt
+!public/*/*.json
+!lab-generated/*/*.csv
+!lab-generated/*/*.json
