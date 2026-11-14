@@ -1,0 +1,11 @@
+event_id,timestamp,source_ip,destination_ip,protocol,destination_port,bytes_transferred,event_type,severity,label
+NET001,2026-11-12T09:00:00Z,192.168.1.10,192.168.1.1,TCP,443,2048,web_access,low,Normal
+NET002,2026-11-12T09:05:00Z,192.168.1.15,192.168.1.5,TCP,80,4096,web_access,low,Normal
+NET003,2026-11-12T09:10:00Z,192.168.1.20,192.168.1.8,UDP,53,512,dns_query,low,Normal
+NET004,2026-11-12T09:15:00Z,198.51.100.77,192.168.1.10,TCP,22,128,repeated_connection_attempts,high,Suspicious
+NET005,2026-11-12T09:20:00Z,203.0.113.60,192.168.1.20,TCP,445,256,port_scan,critical,Suspicious
+NET006,2026-11-12T09:25:00Z,192.168.1.25,192.168.1.1,TCP,443,8192,web_access,low,Normal
+NET007,2026-11-12T09:30:00Z,203.0.113.90,192.168.1.15,TCP,3389,512,unauthorized_access_attempt,high,Suspicious
+NET008,2026-11-12T09:35:00Z,192.168.1.30,192.168.1.8,UDP,53,256,dns_query,low,Normal
+NET009,2026-11-12T09:40:00Z,198.51.100.44,192.168.1.10,TCP,8080,950000,unusual_data_transfer,high,Suspicious
+NET010,2026-11-12T09:45:00Z,192.168.1.10,192.168.1.5,TCP,443,3072,web_access,low,Normal

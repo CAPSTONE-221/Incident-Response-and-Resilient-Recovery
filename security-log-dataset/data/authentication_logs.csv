@@ -1,0 +1,11 @@
+event_id,timestamp,source_ip,username,event_type,status,failed_attempts,severity,label
+AUTH001,2026-11-12T09:00:00Z,192.168.1.10,admin,login,success,0,low,Normal
+AUTH002,2026-11-12T09:05:00Z,192.168.1.15,user01,login,success,0,low,Normal
+AUTH003,2026-11-12T09:10:00Z,192.168.1.20,user02,login,failure,1,low,Normal
+AUTH004,2026-11-12T09:12:00Z,203.0.113.45,admin,login,failure,8,high,Suspicious
+AUTH005,2026-11-12T09:13:00Z,203.0.113.45,admin,login,failure,12,critical,Suspicious
+AUTH006,2026-11-12T09:20:00Z,192.168.1.25,user03,login,success,0,low,Normal
+AUTH007,2026-11-12T09:30:00Z,198.51.100.22,root,login,failure,15,critical,Suspicious
+AUTH008,2026-11-12T10:00:00Z,192.168.1.30,user04,password_change,success,0,low,Normal
+AUTH009,2026-11-12T10:15:00Z,203.0.113.88,admin,login,failure,10,high,Suspicious
+AUTH010,2026-11-12T10:30:00Z,192.168.1.10,admin,logout,success,0,low,Normal
