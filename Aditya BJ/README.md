@@ -4,7 +4,7 @@
 **Team ID:** 221 (Capstone Project Phase-I)  
 **Author:** Aditya Basavaraj Jambagi (Aditya BJ)  
 **Assigned Issue:** [Issue #16 – Collect and Organize Threat Intelligence Sources](https://github.com/CAPSTONE-221/Incident-Response-and-Resilient-Recovery/issues/16)  
-**Dataset Location:** `datasets/threat-intelligence/Aditya BJ/`
+**Dataset Location:** `Aditya BJ/` (Repository Root)
 
 ---
 
@@ -27,11 +27,11 @@ The dataset is organized consistently across both structured tabular (CSV) and s
 
 | File Name | Format | Description |
 |---|---|---|
-| [`iocs.csv`](file:///datasets/threat-intelligence/Aditya%20BJ/iocs.csv) | CSV (UTF-8) | Clean, normalized tabular dataset with standard headers. |
-| [`iocs.json`](file:///datasets/threat-intelligence/Aditya%20BJ/iocs.json) | JSON (UTF-8) | Complete dataset including audit metadata, source distributions, and record arrays. |
-| [`schema.json`](file:///datasets/threat-intelligence/Aditya%20BJ/schema.json) | JSON Schema | Draft-07 compliant formal data definition and validation schema. |
-| [`sources.md`](file:///datasets/threat-intelligence/Aditya%20BJ/sources.md) | Markdown | Attribution records, upstream licensing terms, and access endpoints. |
-| [`README.md`](file:///datasets/threat-intelligence/Aditya%20BJ/README.md) | Markdown | Comprehensive dataset documentation, methodology, and usage guide. |
+| [`iocs.csv`](iocs.csv) | CSV (UTF-8) | Clean, normalized tabular dataset with standard headers. |
+| [`iocs.json`](iocs.json) | JSON (UTF-8) | Complete dataset including audit metadata, source distributions, and record arrays. |
+| [`schema.json`](schema.json) | JSON Schema | Draft-07 compliant formal data definition and validation schema. |
+| [`sources.md`](sources.md) | Markdown | Attribution records, upstream licensing terms, and access endpoints. |
+| [`README.md`](README.md) | Markdown | Comprehensive dataset documentation, methodology, and usage guide. |
 
 ---
 
