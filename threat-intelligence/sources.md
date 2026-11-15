@@ -78,6 +78,6 @@ To prevent inadvertent weaponization, automated browsing, or accidental URL exec
 
 Any team member can reproduce and verify this dataset by running the reproducible collection script:
 ```powershell
-python "Aditya BJ/collect_threat_intel.py"
+python threat-intelligence/collect_threat_intel.py
 ```
 This guarantees complete end-to-end auditability and compliance with project engineering guidelines.

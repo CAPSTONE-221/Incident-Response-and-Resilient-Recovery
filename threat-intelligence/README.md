@@ -4,7 +4,7 @@
 **Team ID:** 221 (Capstone Project Phase-I)  
 **Author:** Aditya Basavaraj Jambagi (Aditya BJ)  
 **Assigned Issue:** [Issue #16 – Collect and Organize Threat Intelligence Sources](https://github.com/CAPSTONE-221/Incident-Response-and-Resilient-Recovery/issues/16)  
-**Dataset Location:** `Aditya BJ/` (Repository Root)
+**Dataset Location:** `threat-intelligence/` (Repository Root)
 
 ---
 
